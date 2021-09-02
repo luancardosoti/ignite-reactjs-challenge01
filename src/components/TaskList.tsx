@@ -16,10 +16,7 @@ export function TaskList() {
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
-    if (newTaskTitle === '') {
-      // return alert('Digita o nome da tarefa bb');
-      return;
-    }
+    if (!newTaskTitle) return;
 
     let randomID: number;
     let existsIdInTasks: Task | undefined;
@@ -46,45 +43,25 @@ export function TaskList() {
       isComplete: false,
     }
 
-    setTasks([...tasks, task])
+    setTasks(oldState => [...oldState, task]);
+    setNewTaskTitle('')
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
-    let task: Task | undefined = tasks.find(task => task.id === id);
+    const newTasks = tasks.map((task) => task.id === id ? {
+      ...task,
+      isComplete: !task.isComplete
+    } : task)
 
-    if (task === undefined) {
-      return alert('Osh! tarefa não encontrada =(');
-    }
-
-    let aux: Task[] = [];
-    tasks.forEach((task) => {
-      if (task.id === id) {
-        aux.push({...task, isComplete: !task.isComplete});
-      } else {
-        aux.push(task)
-      }
-    })
-
-    setTasks(aux);
+    setTasks(newTasks);
   }
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
-    let task: Task | undefined = tasks.find(task => task.id === id);
+    let filteredTasks = tasks.filter(task => task.id !== id);
 
-    if (task === undefined) {
-      return alert('Osh! tarefa não encontrada =(');
-    }
-
-    let aux: Task[] = [];
-    tasks.forEach((task) => {
-      if (task.id !== id) {
-        aux.push(task);
-      }
-    })
-
-    setTasks(aux)
+    setTasks(filteredTasks)
   }
 
   return (
